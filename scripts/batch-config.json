@@ -1,0 +1,13 @@
+{
+  "githubTokenEnvVar": "GITHUB_PAT",
+  "owner": "fabioalves",
+  "ownerType": "user",
+  "repository": "kqm",
+  "projectNumber": 1,
+  "batchSize": 3,
+  "statusFieldName": "Status",
+  "backlogStatusName": "Backlog",
+  "readyStatusName": "Ready",
+  "inProgressStatusName": "In progress",
+  "priorityFieldName": "Priority"
+}
