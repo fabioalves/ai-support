@@ -26,7 +26,7 @@ Locates `config.json` in project root → Identifies configurations → Locates 
 When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
 
 1. **Locate and Parse `config.json`:**
-   Locate `config.json` in the project's root folder (the parent of the repository root, e.g., `C:\projects\<project-name>\config.json`).
+   Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
    * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
 
 2. **GitHub Issue Tracking (In Progress Transition):**

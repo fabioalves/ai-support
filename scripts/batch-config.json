@@ -2,7 +2,7 @@
   "githubTokenEnvVar": "GITHUB_PAT",
   "owner": "fabioalves",
   "ownerType": "user",
-  "repository": "kqm",
+  "repository": "<REPOSITORY_NAME>",
   "projectNumber": 1,
   "batchSize": 3,
   "statusFieldName": "Status",

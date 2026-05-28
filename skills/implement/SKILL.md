@@ -17,7 +17,7 @@ This skill is invoked with a specific issue ID parameter (e.g., `KQM-22` or `AI-
 Before performing ANY codebase reads, file modifications, git checkouts, branch creations, command executions, or running tests:
 
 1. **Locate and Parse `config.json`:**
-   Locate `config.json` in the project's root folder (the parent of the repository root, e.g., `C:\projects\<project-name>\config.json`).
+   Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
    * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
 
 2. **Identify the Issue ID:**

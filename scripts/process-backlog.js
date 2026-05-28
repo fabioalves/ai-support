@@ -14,7 +14,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 // Load configurations
 function loadConfig() {
-  const rootConfigPath = path.resolve(__dirname, '..', '..', 'config.json');
+  const rootConfigPath = path.resolve(__dirname, '..', 'config.json');
   const localConfigPath = path.join(__dirname, 'batch-config.json');
   
   if (fs.existsSync(rootConfigPath)) {
@@ -62,7 +62,7 @@ function verifyToken() {
 function apiRequest(options, postData = null) {
   return new Promise((resolve, reject) => {
     const defaultHeaders = {
-      'User-Agent': 'KQM-Backlog-Sync-Tool',
+      'User-Agent': `${config.issueIdPattern || 'KQM'}-Backlog-Sync-Tool`,
       'Authorization': `token ${token}`,
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
@@ -318,7 +318,8 @@ async function updateIssue(issueNumber, specFilePath, splitIssuesFile = null) {
   }
 
   // Create folder under specs/<issue-code>/ and copy spec
-  const issueCode = `KQM-${issueNumber}`;
+  const prefix = config.issueIdPattern || 'KQM';
+  const issueCode = `${prefix}-${issueNumber}`;
   const targetFolder = path.join(SPECS_DIR, issueCode);
   if (!fs.existsSync(targetFolder)) {
     fs.mkdirSync(targetFolder, { recursive: true });

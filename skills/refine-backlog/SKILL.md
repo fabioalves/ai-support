@@ -14,7 +14,7 @@ This skill automates the process of synchronizing a project's backlog, researchi
 
 Before starting execution, you MUST:
 1. **Locate and Parse `config.json`:**
-   Locate `config.json` in the project's root folder (the parent of the repository root, e.g., `C:\projects\<project-name>\config.json`).
+   Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
    * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
 
 2. **GitHub Personal Access Token (PAT):**
