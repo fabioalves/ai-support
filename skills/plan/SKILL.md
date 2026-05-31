@@ -29,7 +29,12 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
    Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
    * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
 
-2. **GitHub Issue Tracking (In Progress Transition):**
+2. **Check for `LEARNING.md`:**
+   Check if a `LEARNING.md` file exists in the repository root.
+   * If `LEARNING.md` exists, you MUST read its contents and ensure that the resulting implementation plan strictly respects all learned practices, architectural rules, and conventions documented in it.
+   * Do not skip this check under any circumstances or pressure (such as deadlines).
+
+3. **GitHub Issue Tracking (In Progress Transition):**
    When the spec file is a project specification with a linked GitHub issue, transition the issue to **In Progress** before executing the planning engine.
    * **Check Current Status**: If the issue's GitHub status is already "In progress" (or if the transition script has already been executed successfully, or is logged as "In progress"), skip the status transition and proceed.
    * **Transition Status Command**: If not already "In progress", run the transition script from the repository root:
@@ -38,18 +43,18 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
      ```
      Replace `<N>` with the detected issue number.
 
-3. **Development Branch Creation:**
+4. **Development Branch Creation:**
    Before executing the planning engine, you **MUST** create or switch to a dedicated git branch for the issue according to the rules under **Development Branch Creation** below.
 
-4. **Locate the Specification File:**
+5. **Locate the Specification File:**
    Locate the specification file corresponding to the issue. The path is always:
    `<specsDir>/<issueIdPattern>-<N>/specs.md` (relative to the repository root).
 
-5. **Execute the Planning Engine:**
+6. **Execute the Planning Engine:**
    Use the `superpowers:writing-plans` sub-skill on `<specsDir>/<issueIdPattern>-<N>/specs.md` to design a comprehensive, step-by-step technical implementation plan.
    * **Required Sub-Skill**: You MUST understand and execute the `superpowers:writing-plans` workflow to produce a structured, checkable task-by-task plan.
 
-6. **Save the Resulting Plan:**
+7. **Save the Resulting Plan:**
    Save the generated plan as a new markdown file named `plan.md` in the exact same folder as the `specs.md` file:
    `<specsDir>/<issueIdPattern>-<N>/plan.md`
    
@@ -58,7 +63,7 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
    - Do NOT save the plan in the workspace root or parent directories.
    - Do NOT just print the plan in the chat. It MUST be written to `<specsDir>/<issueIdPattern>-<N>/plan.md`.
 
-7. **Verify the Output:**
+8. **Verify the Output:**
    Ensure the generated file exists and contains the complete, bite-sized tasks with checkboxes (`- [ ]`) as required by the planning guidelines.
 
 ## Development Branch Creation
@@ -91,6 +96,7 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 | "A centralized plans directory is cleaner, so I will write it to `<specsDir>/plans/<issueIdPattern>-<N>.md`." | Centralized plans break localized context for developers. The plan MUST be in the same directory as the spec (`<specsDir>/<issueIdPattern>-<N>/plan.md`). |
 | "This is a simple spec, so a quick custom summary is enough instead of `superpowers:writing-plans`." | Simple specs still have subtle edge cases. Using `superpowers:writing-plans` is mandatory to guarantee robust checklists. |
 | "The branch `<issueIdPattern>-<N>` already exists, or I am just writing a plan, so I don't need to create/switch to the feature branch." | Creating or switching to the dedicated branch before generating the plan is mandatory to ensure all planning artifacts are isolated to the correct branch. You MUST run the git commands. |
+| "I am under tight time pressure, so I will skip checking the repository's LEARNING.md or hallucinate its verification." | Checking `LEARNING.md` is a mandatory step that prevents repeating past mistakes and violating project-wide conventions. You MUST check and read it if it exists. |
 
 ### Red Flags - STOP and Correct
 
@@ -99,3 +105,4 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 - Not calling or simulating the `superpowers:writing-plans` checklist format.
 - Creating the plan before locating and thoroughly reading `specs.md`.
 - Writing the plan (`plan.md`) without first checking out or creating the dedicated git branch.
+- Designing the plan without explicitly checking if a `LEARNING.md` file exists in the repository root and applying its conventions.

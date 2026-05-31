@@ -20,6 +20,11 @@ Before starting execution, you MUST:
 2. **GitHub Personal Access Token (PAT):**
    Ensure your environment has a valid GitHub PAT set in the variable specified in `config.json` (defaults to `GITHUB_PAT`).
 
+3. **Check for `LEARNING.md`:**
+   Check if a `LEARNING.md` file exists in the repository root.
+   * If `LEARNING.md` exists, you MUST read it fully and adhere strictly to all documented architectural rules, patterns, lessons, and project conventions during backlog refinement and specification writing.
+   * Do not skip this check under any circumstances or pressure.
+
 ---
 
 ## 🔗 Relative Paths in Spec Documents
@@ -46,6 +51,7 @@ Read the generated `<specsDir>/active-batch.json` to inspect the issues assigned
 For each issue in `<specsDir>/active-batch.json`:
 1. **Check Priority:** Verify that the issue has a priority explicitly defined. If the issue lacks a priority, skip it entirely and do not create a spec.
 2. **Search the Codebase:** Look up files, endpoints, components, or database structures relevant to the issue's requirements.
+3. **Adhere to `LEARNING.md`:** If `LEARNING.md` exists, incorporate any applicable project-wide lessons, constraints, and instructions directly into the specification draft.
 
 ### Step 3: Write the Technical Specification
 Draft a highly detailed technical specification document for the issue. Save this file temporarily at a path like:
