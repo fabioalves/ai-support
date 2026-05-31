@@ -24,11 +24,16 @@ Before performing ANY codebase reads, file modifications, git checkouts, branch 
    Extract the issue number `<N>` from the passed parameter (e.g., for `KQM-22`, `<N>` is `22`). The localized folder is:
    `<specsDir>/<issueIdPattern>-<N>/`
 
-3. **Check for plan.md existence:**
+3. **Check for `LEARNING.md`:**
+   Check if a `LEARNING.md` file exists in the repository root.
+   * If `LEARNING.md` exists, you MUST read its contents and strictly adhere to all guidelines, constraints, and instructions in it during implementation.
+   * Do not skip this check under any circumstances or pressure.
+
+4. **Check for plan.md existence:**
    Check if `<specsDir>/<issueIdPattern>-<N>/plan.md` exists in the repository.
    * **Prohibited Pre-Reads**: You may only check for the existence of `<specsDir>/<issueIdPattern>-<N>/plan.md` and read `specs.md` if necessary to locate it. You are strictly forbidden from checking out git branches, running codebase tests, or viewing implementation source files before this check is completed.
 
-4. **Plan Missing Protocol (MUST HALT):**
+5. **Plan Missing Protocol (MUST HALT):**
    If the file `<specsDir>/<issueIdPattern>-<N>/plan.md` **does not exist**, you **MUST STOP IMMEDIATELY**.
    * You are strictly prohibited from performing any further steps, creating branches, checking out existing branches, running test suites, or writing code.
    * You **MUST** output a prompt asking the user:
@@ -102,9 +107,11 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 | "The branch `<issueIdPattern>-14` already exists and the code seems fully implemented, so I can bypass the plan check." | Bypassing the check is a violation of the letter of the rules. You must check for the existence of `plan.md` and ask the user BEFORE checking out the branch or verifying the code. |
 | "I am under extreme time pressure, so I will just implement the spec without stopping to ask." | Quality and compliance are mandatory. Skipping the prompt when `plan.md` is missing leads to unaligned implementations. You MUST halt and ask. |
 | "I'll do the git checkout and verify the tests first, and if they fail, I'll ask about the plan." | Any codebase read, git operation, or test execution before the plan check is strictly forbidden. The check must run first. |
+| "I am under tight time pressure, so I will skip checking for LEARNING.md or bypass its constraints." | Reading and respecting `LEARNING.md` is a critical, mandatory step. Skipping it leads to repeating past mistakes. You MUST check for it and adhere to it. |
 
 ### Red Flags - STOP and Correct
 
 - Checking out git branches or running tests before checking if `plan.md` exists.
 - Proceeding with implementation when `plan.md` is missing without prompting the user.
 - Proceeding because "the work is already done on another branch".
+- Proceeding with implementation without checking if a `LEARNING.md` file exists in the repository root and applying its conventions.

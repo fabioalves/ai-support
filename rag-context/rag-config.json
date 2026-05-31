@@ -1,0 +1,47 @@
+{
+  "project_name": "karaokequeuemanager",
+  "github": {
+    "repository": "fabioalves/kqm"
+  },
+  "sources": {
+    "code": {
+      "projects": [
+        {
+          "name": "backend",
+          "path": "C:\\projects\\karaokequeuemanager\\karaokequeuemanager"
+        }
+      ],
+      "extensions": [".cs", ".vue", ".ts", ".js"],
+      "ignore_dirs": ["node_modules", "dist", "bin", "obj", ".git", ".venv", "migrations"],
+      "chunk_size": 500,
+      "chunk_overlap": 50
+    },
+    "docs": {
+      "projects": [
+        {
+          "name": "backend",
+          "path": "C:\\projects\\karaokequeuemanager\\karaokequeuemanager"
+        }
+      ],
+      "extensions": [".md"],
+      "ignore_dirs": [".git", ".venv", "node_modules"],
+      "chunk_size": 500,
+      "chunk_overlap": 50
+    },
+    "issues": {
+      "chunk_size": 500,
+      "chunk_overlap": 50
+    }
+  },
+  "chroma": {
+    "path": "./data/chroma",
+    "collection_name": "project_context"
+  },
+  "ollama": {
+    "base_url": "http://localhost:11434",
+    "embedding_model": "nomic-embed-text"
+  },
+  "api": {
+    "base_url": "http://localhost:8000"
+  }
+}

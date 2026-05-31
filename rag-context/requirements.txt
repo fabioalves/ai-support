@@ -1,0 +1,23 @@
+# Ingestion
+langchain
+langchain-community
+langchain-text-splitters
+
+# Embeddings (local via Ollama)
+langchain-ollama
+
+# Vector DB
+chromadb
+
+# GitHub Issues
+PyGithub
+
+# REST API
+fastapi
+uvicorn
+
+# MCP server
+mcp
+
+# Utilities
+python-dotenv
