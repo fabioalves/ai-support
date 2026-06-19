@@ -48,7 +48,8 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
 4. **Interactive Guided Walkthrough:**
    After generating and saving the initial plan, you MUST present the plan to the user as a guided walkthrough, section by section.
    * Do NOT output the entire plan at once in the chat.
-   * Show the current section of the plan and ask the user to respond with one of the following options:
+   * **CRITICAL**: You MUST explicitly print the FULL content of the current section in the console/chat BEFORE asking the user for their choice. Do NOT just ask if they accept without showing them the text.
+   * After displaying the section's content, ask the user to respond with one of the following options:
      1. **Accept**: Proceed to the next section.
      2. **Adjust**: The user provides adjustments. You must update the section (and `plan.md`), then ask for acceptance again.
      3. **Cancel**: Stop the walkthrough.
@@ -72,6 +73,7 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 | "This is a simple spec, so a quick custom summary is enough instead of `superpowers:writing-plans`." | Simple specs still have subtle edge cases. Using `superpowers:writing-plans` is mandatory to guarantee robust checklists. |
 | "The branch `<issueIdPattern>-<N>` already exists, or I am just writing a plan, so I don't need to create/switch to the feature branch." | Creating or switching to the dedicated branch before generating the plan is mandatory to ensure all planning artifacts are isolated to the correct branch. You MUST run the git commands. |
 | "I am under tight time pressure, so I will skip checking the repository's LEARNING.md or hallucinate its verification." | Checking `LEARNING.md` is a mandatory step that prevents repeating past mistakes and violating project-wide conventions. You MUST check and read it if it exists. |
+| "The user can read the file, so I will just ask for approval without printing the section." | The user needs to see the section in the console to review it easily. You MUST print the full section text before asking for approval. |
 
 ### Red Flags - STOP and Correct
 
@@ -82,3 +84,4 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 - Writing the plan (`plan.md`) without first checking out or creating the dedicated git branch.
 - Designing the plan without explicitly checking if a `LEARNING.md` file exists in the repository root and applying its conventions.
 - Skipping the interactive section-by-section walkthrough or showing the entire plan at once.
+- Asking for section acceptance without explicitly showing the section's full content in the console first.
