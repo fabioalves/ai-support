@@ -16,30 +16,12 @@ This skill is invoked with a specific issue ID parameter (e.g., `KQM-22` or `AI-
 
 Before performing ANY codebase reads, file modifications, git checkouts, branch creations, command executions, or running tests:
 
-1. **Locate and Parse `config.json`:**
-   Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
-   * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
-
-2. **Identify the Issue ID:**
-   Extract the issue number `<N>` from the passed parameter (e.g., for `KQM-22`, `<N>` is `22`). The localized folder is:
-   `<specsDir>/<issueIdPattern>-<N>/`
-
-3. **Check for `LEARNING.md`:**
-   Check if a `LEARNING.md` file exists in the repository root.
-   * If `LEARNING.md` exists, you MUST read its contents and strictly adhere to all guidelines, constraints, and instructions in it during implementation.
-   * Do not skip this check under any circumstances or pressure.
-
-4. **Check for plan.md existence:**
-   Check if `<specsDir>/<issueIdPattern>-<N>/plan.md` exists in the repository.
-   * **Prohibited Pre-Reads**: You may only check for the existence of `<specsDir>/<issueIdPattern>-<N>/plan.md` and read `specs.md` if necessary to locate it. You are strictly forbidden from checking out git branches, running codebase tests, or viewing implementation source files before this check is completed.
-
-5. **Plan Missing Protocol (MUST HALT):**
-   If the file `<specsDir>/<issueIdPattern>-<N>/plan.md` **does not exist**, you **MUST STOP IMMEDIATELY**.
-   * You are strictly prohibited from performing any further steps, creating branches, checking out existing branches, running test suites, or writing code.
-   * You **MUST** output a prompt asking the user:
-     `Should I continue the execution only with the specs.md as source?`
-   * You **MUST** halt and wait for the user's explicit reply before proceeding.
-   * If the user approves, you may proceed. If the user rejects or provides a plan, follow that instruction instead.
+1. **Execute Pre-Implement Script:**
+   Run the `pre-implement.ps1` script to automate configuration parsing, branch management, issue status transitions, and verifying the existence of the `plan.md` file.
+   ```powershell
+   & "$env:USERPROFILE\.gemini\antigravity-cli\skills\implement\scripts\pre-implement.ps1" -IssueId <issue-id>
+   ```
+   * **CRITICAL:** If the script errors due to a missing `plan.md`, you **MUST STOP IMMEDIATELY** and output a prompt asking the user: `Should I continue the execution only with the specs.md as source?` Wait for the user's explicit reply before proceeding.
 
 ---
 
@@ -66,35 +48,6 @@ This skill integrates the `superpowers:*` skill suite as first-class extensions.
 - **After each task in a plan**: invoke `requesting-code-review`; fix Critical/Important issues before proceeding.
 - **After all tasks complete**: invoke `finishing-a-development-branch`.
 
-## GitHub Issue Tracking
-
-When the spec file is a project specification with a linked GitHub issue, transition the issue to **In Progress** before making any changes.
-
-### Transition Step (runs FIRST, after plan existence check passes and before reading any source files)
-
-1. **Verify Current Status:**
-   If the issue's GitHub status is already "In progress" (or if the transition script has already been executed successfully, or is logged as "In progress"), skip the status transition and proceed.
-
-2. **Transition Status Command:**
-   If not already "In progress", run the transition script from the repository root:
-   ```powershell
-   node <scriptsDir>/process-backlog.js in-progress <N>
-   ```
-   * Replace `<N>` with the detected issue number.
-   * **CRITICAL**: You **MUST** run this command and wait for it to complete successfully before taking any other action unless the status is already "In progress".
-
-## Development Branch Creation
-
-Before making any code changes, if a spec file is passed as a parameter to this skill (e.g., `<specsDir>/<issueIdPattern>-14/specs.md`), you **MUST** create a new git branch for the implementation.
-
-### Branch Naming Rule
-- The branch name must be the name of the spec folder being developed (e.g., for `<specsDir>/<issueIdPattern>-14/specs.md`, the branch must be named `<issueIdPattern>-14`).
-- Only perform this action if a spec is passed as a parameter.
-
-### Command
-```powershell
-git checkout -b <BRANCH_NAME>
-```
 
 ## Bulletproofing & Rationalization Defense
 

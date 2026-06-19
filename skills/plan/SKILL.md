@@ -25,36 +25,18 @@ Locates `config.json` in project root → Identifies configurations → Locates 
 
 When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
 
-1. **Locate and Parse `config.json`:**
-   Locate `config.json` in the project's root folder (e.g., `C:\projects\<project-name>\config.json`).
-   * Extract `issueIdPattern` (e.g., `KQM` or `AI`), `specsDir` (e.g., `specs`), and `scriptsDir` (e.g., `scripts`).
+1. **Execute Pre-Plan Script:**
+   Run the `pre-plan.ps1` script to automate configuration parsing, branch management, issue status transitions, and locate the required files.
+   ```powershell
+   & "$env:USERPROFILE\.gemini\antigravity-cli\skills\plan\scripts\pre-plan.ps1" -IssueId <issue-id>
+   ```
+   * **Note:** This script will output the location of the `specs.md` file and check for `LEARNING.md`.
 
-2. **Check for `LEARNING.md`:**
-   Check if a `LEARNING.md` file exists in the repository root.
-   * If `LEARNING.md` exists, you MUST read its contents and ensure that the resulting implementation plan strictly respects all learned practices, architectural rules, and conventions documented in it.
-   * Do not skip this check under any circumstances or pressure (such as deadlines).
-
-3. **GitHub Issue Tracking (In Progress Transition):**
-   When the spec file is a project specification with a linked GitHub issue, transition the issue to **In Progress** before executing the planning engine.
-   * **Check Current Status**: If the issue's GitHub status is already "In progress" (or if the transition script has already been executed successfully, or is logged as "In progress"), skip the status transition and proceed.
-   * **Transition Status Command**: If not already "In progress", run the transition script from the repository root:
-     ```powershell
-     node <scriptsDir>/process-backlog.js in-progress <N>
-     ```
-     Replace `<N>` with the detected issue number.
-
-4. **Development Branch Creation:**
-   Before executing the planning engine, you **MUST** create or switch to a dedicated git branch for the issue according to the rules under **Development Branch Creation** below.
-
-5. **Locate the Specification File:**
-   Locate the specification file corresponding to the issue. The path is always:
-   `<specsDir>/<issueIdPattern>-<N>/specs.md` (relative to the repository root).
-
-6. **Execute the Planning Engine:**
+2. **Execute the Planning Engine:**
    Use the `superpowers:writing-plans` sub-skill on `<specsDir>/<issueIdPattern>-<N>/specs.md` to design a comprehensive, step-by-step technical implementation plan.
    * **Required Sub-Skill**: You MUST understand and execute the `superpowers:writing-plans` workflow to produce a structured, checkable task-by-task plan.
 
-7. **Save the Resulting Plan:**
+3. **Save the Resulting Plan:**
    Save the generated plan as a new markdown file named `plan.md` in the exact same folder as the `specs.md` file:
    `<specsDir>/<issueIdPattern>-<N>/plan.md`
    
@@ -63,26 +45,19 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
    - Do NOT save the plan in the workspace root or parent directories.
    - Do NOT just print the plan in the chat. It MUST be written to `<specsDir>/<issueIdPattern>-<N>/plan.md`.
 
-8. **Verify the Output:**
-   Ensure the generated file exists and contains the complete, bite-sized tasks with checkboxes (`- [ ]`) as required by the planning guidelines.
+4. **Interactive Guided Walkthrough:**
+   After generating and saving the initial plan, you MUST present the plan to the user as a guided walkthrough, section by section.
+   * Do NOT output the entire plan at once in the chat.
+   * Show the current section of the plan and ask the user to respond with one of the following options:
+     1. **Accept**: Proceed to the next section.
+     2. **Adjust**: The user provides adjustments. You must update the section (and `plan.md`), then ask for acceptance again.
+     3. **Cancel**: Stop the walkthrough.
+   * Continue to the next section only when the current one is accepted.
+   * If the user chooses **Cancel**, you MUST update the `plan.md` file to explicitly mark all sections that were not shown and accepted as **Pending Acceptance** (e.g., adding a "(Pending Acceptance)" note to their headings).
 
-## Development Branch Creation
+5. **Verify the Output:**
+   Ensure the generated file exists, contains the complete, bite-sized tasks with checkboxes (`- [ ]`) as required by the planning guidelines, and reflects any adjustments made during the walkthrough.
 
-Before executing the planning engine or making any file changes, if an issue ID is passed as a parameter to this skill (e.g., `KQM-29`), you **MUST** create or switch to a dedicated git branch for the planning and implementation.
-
-### Branch Naming Rule
-- The branch name must be the issue ID being planned (e.g., for `KQM-29`, the branch must be named `KQM-29`).
-- Only perform this action if an issue ID is passed as a parameter.
-
-### Commands
-If the branch already exists:
-```powershell
-git checkout <BRANCH_NAME>
-```
-Otherwise, create and switch to it:
-```powershell
-git checkout -b <BRANCH_NAME>
-```
 
 ## Bulletproofing & Rationalization Defense
 
@@ -106,3 +81,4 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 - Creating the plan before locating and thoroughly reading `specs.md`.
 - Writing the plan (`plan.md`) without first checking out or creating the dedicated git branch.
 - Designing the plan without explicitly checking if a `LEARNING.md` file exists in the repository root and applying its conventions.
+- Skipping the interactive section-by-section walkthrough or showing the entire plan at once.

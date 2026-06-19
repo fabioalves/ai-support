@@ -1,0 +1,51 @@
+param(
+    [Parameter(Mandatory=$true)][string]$IssueId
+)
+
+$configPath = "config.json"
+if (-not (Test-Path $configPath)) {
+    Write-Error "config.json not found in the current directory."
+    exit 1
+}
+$config = Get-Content $configPath | ConvertFrom-Json
+$issueIdPattern = $config.issueIdPattern
+$specsDir = $config.specsDir
+$scriptsDir = $config.scriptsDir
+
+if ($IssueId -match "$issueIdPattern-(\d+)") {
+    $N = $matches[1]
+} else {
+    Write-Error "IssueId '$IssueId' does not match pattern '$issueIdPattern-N'."
+    exit 1
+}
+
+# Check for Learnings
+if (Test-Path "LEARNING.md") {
+    Write-Host "[REQUIRED] LEARNING.md found. You MUST read its contents and respect its practices."
+}
+
+# Branch Management
+$currentBranch = git branch --show-current
+if ($currentBranch -ne $IssueId) {
+    $branchExists = git rev-parse --verify --quiet $IssueId
+    if ($LASTEXITCODE -eq 0) {
+        git checkout $IssueId
+    } else {
+        git checkout -b $IssueId
+    }
+}
+
+# Transition Issue Status
+if (Test-Path "$scriptsDir/process-backlog.js") {
+    node "$scriptsDir/process-backlog.js" in-progress $N
+}
+
+# Locate Spec File
+$specFile = "$specsDir/$IssueId/specs.md"
+if (-not (Test-Path $specFile)) {
+    Write-Error "Spec file not found at $specFile"
+    exit 1
+}
+
+Write-Host "Pre-plan checks complete. Target Spec File: $specFile"
+Write-Host "Target Plan File: $specsDir/$IssueId/plan.md"
