@@ -59,6 +59,9 @@ When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
 5. **Verify the Output:**
    Ensure the generated file exists, contains the complete, bite-sized tasks with checkboxes (`- [ ]`) as required by the planning guidelines, and reflects any adjustments made during the walkthrough.
 
+6. **Halt Process:**
+   After the plan is generated, verified, and the walkthrough is complete (or cancelled), you MUST STOP. Do NOT proceed to implement the plan. The `/plan` command is strictly for planning. Wait for the user to trigger the implementation separately (e.g., via the `/implement` command).
+
 
 ## Bulletproofing & Rationalization Defense
 
@@ -74,9 +77,11 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 | "The branch `<issueIdPattern>-<N>` already exists, or I am just writing a plan, so I don't need to create/switch to the feature branch." | Creating or switching to the dedicated branch before generating the plan is mandatory to ensure all planning artifacts are isolated to the correct branch. You MUST run the git commands. |
 | "I am under tight time pressure, so I will skip checking the repository's LEARNING.md or hallucinate its verification." | Checking `LEARNING.md` is a mandatory step that prevents repeating past mistakes and violating project-wide conventions. You MUST check and read it if it exists. |
 | "The user can read the file, so I will just ask for approval without printing the section." | The user needs to see the section in the console to review it easily. You MUST print the full section text before asking for approval. |
+| "The plan is approved, so I will save time and start implementing it right away." | The `/plan` action is exclusively for planning. You MUST stop after `plan.md` is complete and wait for explicit implementation triggers. |
 
 ### Red Flags - STOP and Correct
 
+- Proceeding to implementation or writing application code after the plan is created.
 - Printing the plan in the chat instead of writing to a file.
 - Saving `plan.md` in the wrong folder (e.g. workspace root, parent folders).
 - Not calling or simulating the `superpowers:writing-plans` checklist format.
