@@ -226,7 +226,7 @@ async function listBacklog(outputToFile = false) {
     if (item.content.state !== 'OPEN') continue; // Skip closed issues
 
     let status = '';
-    let priority = 'Low'; // default
+    let priority = null;
 
     for (const val of item.fieldValues.nodes) {
       if (val.field && val.field.name === config.statusFieldName) {
@@ -237,7 +237,7 @@ async function listBacklog(outputToFile = false) {
       }
     }
 
-    if (status === config.backlogStatusName) {
+    if (status === config.backlogStatusName && priority) {
       backlogItems.push({
         itemId: item.id,
         issueId: item.content.id,
@@ -251,7 +251,7 @@ async function listBacklog(outputToFile = false) {
   }
 
   // Define Priority ordering
-  const priorityWeights = { 'High': 3, 'Medium': 2, 'Low': 1 };
+  const priorityWeights = { 'P0': 3, 'P1': 2, 'P2': 1 };
   backlogItems.sort((a, b) => {
     const weightA = priorityWeights[a.priority] || 0;
     const weightB = priorityWeights[b.priority] || 0;
@@ -266,7 +266,7 @@ async function listBacklog(outputToFile = false) {
   console.log(`\nFound \x1b[33m${backlogItems.length}\x1b[0m backlog issues (sorted by priority):\n`);
   
   backlogItems.forEach((item, index) => {
-    const priorityColor = item.priority === 'High' ? '\x1b[31m' : item.priority === 'Medium' ? '\x1b[33m' : '\x1b[32m';
+    const priorityColor = item.priority === 'P0' ? '\x1b[31m' : item.priority === 'P1' ? '\x1b[33m' : '\x1b[32m';
     console.log(`  [${index + 1}] \x1b[1m#${item.number}\x1b[0m: ${item.title}`);
     console.log(`      Priority: ${priorityColor}${item.priority}\x1b[0m | ID: ${item.itemId}`);
   });
