@@ -237,7 +237,8 @@ async function listBacklog(outputToFile = false) {
       }
     }
 
-    if (status === config.backlogStatusName && priority) {
+    const validPriorities = ['P0', 'P1', 'P2'];
+    if (status === config.backlogStatusName && validPriorities.includes(priority)) {
       backlogItems.push({
         itemId: item.id,
         issueId: item.content.id,

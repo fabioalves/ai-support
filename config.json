@@ -1,0 +1,17 @@
+{
+  "githubUrl": "https://github.com/fabioalves/ai-support",
+  "issueIdPattern": "TEST",
+  "githubTokenEnvVar": "GITHUB_PAT",
+  "owner": "fabioalves",
+  "ownerType": "user",
+  "repository": "ai-support",
+  "projectNumber": 1,
+  "batchSize": 3,
+  "statusFieldName": "Status",
+  "backlogStatusName": "Backlog",
+  "readyStatusName": "Ready",
+  "inProgressStatusName": "In progress",
+  "priorityFieldName": "Priority",
+  "specsDir": "specs",
+  "scriptsDir": "scripts"
+}
