@@ -26,9 +26,16 @@ Locates `config.json` in project root → Identifies configurations → Locates 
 When this skill is triggered with an issue ID (e.g., `KQM-12` or `AI-5`):
 
 1. **Execute Pre-Plan Script:**
-   Run the `pre-plan.ps1` script to automate configuration parsing, branch management, issue status transitions, and locate the required files.
+   Run the `pre-plan.ps1` script (or `pre-plan.sh` on macOS/Linux) to automate configuration parsing, branch management, issue status transitions, and locate the required files.
+
+   On Windows (PowerShell):
    ```powershell
    & "$env:USERPROFILE\.gemini\antigravity-cli\skills\plan\scripts\pre-plan.ps1" -IssueId <issue-id>
+   ```
+
+   On macOS/Linux (Bash):
+   ```bash
+   ~/.gemini/antigravity-cli/skills/plan/scripts/pre-plan.sh -i <issue-id>
    ```
    * **Note:** This script will output the location of the `specs.md` file and check for `LEARNING.md`.
 

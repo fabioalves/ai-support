@@ -17,10 +17,18 @@ This skill is invoked with a specific issue ID parameter (e.g., `KQM-22` or `AI-
 Before performing ANY codebase reads, file modifications, git checkouts, branch creations, command executions, or running tests:
 
 1. **Execute Pre-Implement Script:**
-   Run the `pre-implement.ps1` script to automate configuration parsing, branch management, issue status transitions, and verifying the existence of the `plan.md` file.
+   Run the `pre-implement.ps1` script (or `pre-implement.sh` on macOS/Linux) to automate configuration parsing, branch management, issue status transitions, and verifying the existence of the `plan.md` file.
+
+   On Windows (PowerShell):
    ```powershell
    & "$env:USERPROFILE\.gemini\antigravity-cli\skills\implement\scripts\pre-implement.ps1" -IssueId <issue-id>
    ```
+
+   On macOS/Linux (Bash):
+   ```bash
+   ~/.gemini/antigravity-cli/skills/implement/scripts/pre-implement.sh -i <issue-id>
+   ```
+   * **Branch Check:** The script checks if a branch named `<issue-id>` already exists. If it does, it checkouts that branch before verifying the existence of `plan.md` on that branch. If the branch does not exist, it checks for `plan.md` on the current branch first, and creates/checkouts the new branch only if `plan.md` is present (or if you proceed after user confirmation).
    * **CRITICAL:** If the script errors due to a missing `plan.md`, you **MUST STOP IMMEDIATELY** and output a prompt asking the user: `Should I continue the execution only with the specs.md as source?` Wait for the user's explicit reply before proceeding.
 
 ---
@@ -70,10 +78,10 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 
 | Excuse | Reality |
 |--------|---------|
-| "The branch `<issueIdPattern>-14` already exists and the code seems fully implemented, so I can bypass the plan check." | Bypassing the check is a violation of the letter of the rules. You must check for the existence of `plan.md` and ask the user BEFORE checking out the branch or verifying the code. |
+| "The branch `<issueIdPattern>-14` already exists and the code seems fully implemented, so I can bypass running the pre-implement script." | Bypassing the pre-implement script is a violation of the letter of the rules. You must run the pre-implement script, which will automatically checkout the existing branch and check for `plan.md`, asking the user if it is missing. |
 | "I am under extreme time pressure / production is down, so I will execute plans inline or skip subagent dispatches." | Speed and urgency do not justify bypassing process. You MUST use Subagent-Driven Development to execute plans task-by-task. |
 | "Merging locally to main is faster to deploy the hotfix, and I don't need to move it to In Review." | Local merges directly to the base branch bypass validation. You MUST push, create a Pull Request, and transition the issue to "In Review" using the backlog CLI. |
-| "I'll do the git checkout and verify the tests first, and if they fail, I'll ask about the plan." | Any codebase read, git operation, or test execution before the plan check is strictly forbidden. The check must run first. |
+| "I'll do the git checkout and verify the tests first, and if they fail, I'll run the pre-implement script." | Any codebase read, manual git operation, or test execution before running the pre-implement script is strictly forbidden. The script must run first. |
 | "I am under tight time pressure, so I will skip checking for LEARNING.md or bypass its constraints." | Reading and respecting `LEARNING.md` is a critical, mandatory step. Skipping it leads to repeating past mistakes. You MUST check for it and adhere to it. |
 
 ### Red Flags - STOP and Correct
@@ -81,7 +89,7 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 - Using inline execution (`executing-plans`) instead of Subagent-Driven Development.
 - Merging branches locally to `main`/`master` instead of pushing and creating a Pull Request.
 - Not moving the issue to "In Review" using `process-backlog.js` after creating the Pull Request.
-- Checking out git branches or running tests before checking if `plan.md` exists.
+- Checking out git branches, creating branches, or running tests manually before running the `pre-implement.ps1` or `pre-implement.sh` script (which handles branch checkout and checking if `plan.md` exists).
 - Proceeding with implementation when `plan.md` is missing without prompting the user.
 - Proceeding because "the work is already done on another branch".
 - Proceeding with implementation without checking if a `LEARNING.md` file exists in the repository root and applying its conventions.

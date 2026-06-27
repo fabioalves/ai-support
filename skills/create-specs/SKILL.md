@@ -62,9 +62,16 @@ Draft a highly detailed technical specification document for the issue. Save thi
 Use the standard specification template provided below in the **Specification Template** section. Ensure all placeholders are expanded with actual, concrete paths and designs tailored to the Karaoke Queue Manager codebase.
 
 ### Step 4: Finalize the Specification
-Execute the `finalize-spec.ps1` script to automate submitting the issue, committing the files to Git, and cleaning up temporary files.
+Execute the `finalize-spec.ps1` script (or `finalize-spec.sh` on macOS/Linux) to automate submitting the issue, committing the files to Git, and cleaning up temporary files.
+
+On Windows (PowerShell):
 ```powershell
 & "$env:USERPROFILE\.gemini\antigravity-cli\skills\create-specs\scripts\finalize-spec.ps1" -IssueNumber <issue-number> -IssueId <issue-id> -TempSpecPath specs/temp-spec-KQM-<issue-number>.md
+```
+
+On macOS/Linux (Bash):
+```bash
+~/.gemini/antigravity-cli/skills/create-specs/scripts/finalize-spec.sh -n <issue-number> -i <issue-id> -t specs/temp-spec-KQM-<issue-number>.md
 ```
 
 ---

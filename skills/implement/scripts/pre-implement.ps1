@@ -24,6 +24,24 @@ if (Test-Path "LEARNING.md") {
     Write-Host "[REQUIRED] LEARNING.md found. You MUST read its contents and respect its practices."
 }
 
+# Branch Checking and Management
+$currentBranch = git branch --show-current
+$branchExists = $false
+if ($currentBranch -eq $IssueId) {
+    $branchExists = $true
+} else {
+    git rev-parse --verify --quiet $IssueId
+    if ($LASTEXITCODE -eq 0) {
+        $branchExists = $true
+    }
+}
+
+if ($branchExists) {
+    if ($currentBranch -ne $IssueId) {
+        git checkout $IssueId
+    }
+}
+
 # Verify Plan Existence
 $planFile = "$specsDir/$IssueId/plan.md"
 if (-not (Test-Path $planFile)) {
@@ -31,15 +49,8 @@ if (-not (Test-Path $planFile)) {
     exit 1
 }
 
-# Branch Management
-$currentBranch = git branch --show-current
-if ($currentBranch -ne $IssueId) {
-    $branchExists = git rev-parse --verify --quiet $IssueId
-    if ($LASTEXITCODE -eq 0) {
-        git checkout $IssueId
-    } else {
-        git checkout -b $IssueId
-    }
+if (-not $branchExists) {
+    git checkout -b $IssueId
 }
 
 # Transition Issue Status
