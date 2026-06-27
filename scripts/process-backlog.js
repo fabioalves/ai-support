@@ -256,7 +256,10 @@ async function listBacklog(outputToFile = false) {
   backlogItems.sort((a, b) => {
     const weightA = priorityWeights[a.priority] || 0;
     const weightB = priorityWeights[b.priority] || 0;
-    return weightB - weightA; // High priority first
+    if (weightB !== weightA) {
+      return weightB - weightA; // High priority first
+    }
+    return a.number - b.number; // Ascending order of issue number
   });
 
   if (backlogItems.length === 0) {
