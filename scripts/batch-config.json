@@ -9,5 +9,6 @@
   "backlogStatusName": "Backlog",
   "readyStatusName": "Ready",
   "inProgressStatusName": "In progress",
+  "inReviewStatusName": "In Review",
   "priorityFieldName": "Priority"
 }

@@ -503,6 +503,77 @@ async function markInProgress(issueNumber) {
   console.log(`\x1b[32mMoved Issue #${issueNumber} to "${inProgressStatusName}" status.\x1b[0m\n`);
 }
 
+// Mark Issue as In Review
+async function markInReview(issueNumber) {
+  console.log(`\n\x1b[36m>>> Marking Issue #${issueNumber} as In Review...\x1b[0m`);
+
+  const project = await fetchProjectData();
+  const statusField = project.fields.nodes.find(f => f.name === config.statusFieldName);
+  if (!statusField) {
+    throw new Error(`Status field "${config.statusFieldName}" not found in project.`);
+  }
+
+  const inReviewStatusName = config.inReviewStatusName || 'In Review';
+  const inReviewOption = statusField.options.find(opt => opt.name === inReviewStatusName);
+  if (!inReviewOption) {
+    throw new Error(`In Review status option "${inReviewStatusName}" not found in Status field options.`);
+  }
+
+  let targetItem = null;
+  for (const item of project.items.nodes) {
+    if (item.content && item.content.number === parseInt(issueNumber, 10)) {
+      targetItem = item;
+      break;
+    }
+  }
+
+  if (!targetItem) {
+    console.log(`\x1b[33mSkipping: Issue #${issueNumber} not found in the project board.\x1b[0m\n`);
+    return;
+  }
+
+  // Check current status — only transition if the issue is in "In Progress"
+  const inProgressStatusName = config.inProgressStatusName || 'In Progress';
+  let currentStatus = '';
+  for (const val of targetItem.fieldValues.nodes) {
+    if (val.field && val.field.name === config.statusFieldName) {
+      currentStatus = val.name;
+      break;
+    }
+  }
+
+  if (currentStatus.toLowerCase() !== inProgressStatusName.toLowerCase()) {
+    console.log(`\x1b[33mSkipping: Issue #${issueNumber} is currently "${currentStatus || '(none)'}" (not "${inProgressStatusName}"). No transition performed.\x1b[0m\n`);
+    return;
+  }
+
+  const transitionMutation = `
+  mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+    updateProjectV2ItemFieldValue(
+      input: {
+        projectId: $projectId
+        itemId: $itemId
+        fieldId: $fieldId
+        value: { singleSelectOptionId: $optionId }
+      }
+    ) {
+      projectV2Item {
+        id
+      }
+    }
+  }
+  `;
+
+  await graphqlQuery(transitionMutation, {
+    projectId: project.id,
+    itemId: targetItem.id,
+    fieldId: statusField.id,
+    optionId: inReviewOption.id
+  });
+
+  console.log(`\x1b[32mMoved Issue #${issueNumber} to "${inReviewStatusName}" status.\x1b[0m\n`);
+}
+
 // CLI Routing
 const commandArgs = process.argv.slice(2);
 const cmd = commandArgs[0];
@@ -518,6 +589,7 @@ Commands:
   \x1b[1mlist\x1b[0m                                 Lists all active backlog issues sorted by priority.
   \x1b[1mfetch\x1b[0m                                Fetches the next batch of size "${config.batchSize}" and saves to specs/active-batch.json.
   \x1b[1min-progress <issue-num>\x1b[0m              Moves a project item to the "In Progress" status column.
+  \x1b[1min-review <issue-num>\x1b[0m                Moves a project item to the "In Review" status column.
   \x1b[1mupdate <issue-num> --spec-file <path>\x1b[0m   Creates a local folder under specs/, links spec in GitHub, and moves issue to "Ready".
   
 Options:
@@ -542,6 +614,13 @@ verifyToken();
         process.exit(1);
       }
       await markInProgress(issueNumber);
+    } else if (cmd === 'in-review') {
+      const issueNumber = commandArgs[1];
+      if (!issueNumber) {
+        console.error('\x1b[31mError: Missing issue number. Usage: node scripts/process-backlog.js in-review <issue-number>\x1b[0m');
+        process.exit(1);
+      }
+      await markInReview(issueNumber);
     } else if (cmd === 'update') {
       const issueNumber = commandArgs[1];
       if (!issueNumber) {

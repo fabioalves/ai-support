@@ -37,7 +37,7 @@ This skill integrates the `superpowers:*` skill suite as first-class extensions.
 | **Debug** | `superpowers:systematic-debugging` | Any test failure, unexpected behaviour, or recurring blocker; always find root cause before fixing |
 | **Verify** | `superpowers:verification-before-completion` | Before claiming work is done; run evidence commands and confirm output |
 | **Review** | `superpowers:requesting-code-review` | After each major task or feature; dispatch reviewer subagent for fresh-eyes check |
-| **Finish** | `superpowers:finishing-a-development-branch` | When all tasks pass; verify tests, detect environment, then Push and create a Pull Request. |
+| **Finish** | `superpowers:finishing-a-development-branch` | When all tasks pass; verify tests, detect environment, then Push, create a Pull Request, and move the item to "In Review". |
 
 ### Extension Activation Rules
 
@@ -47,7 +47,7 @@ This skill integrates the `superpowers:*` skill suite as first-class extensions.
 - **Any test failure during implementation**: suspend coding, invoke `systematic-debugging`, resolve root cause, then resume.
 - **Before any completion claim**: invoke `verification-before-completion`; evidence before assertions, always.
 - **After each task in a plan**: invoke `requesting-code-review`; fix Critical/Important issues before proceeding.
-- **After all tasks complete**: invoke `finishing-a-development-branch` to push the branch and create a Pull Request.
+- **After all tasks complete**: invoke `finishing-a-development-branch` to push the branch, create a Pull Request, and move the item to "In Review" using `process-backlog.js`.
 
 ### Pull Request Integration Rules
 
@@ -55,6 +55,11 @@ When completing development, you must **always Push and create a Pull Request**.
 1. **Use `gh` CLI**: Try to use the `gh` tool to create the Pull Request (e.g., `gh pr create --fill`).
 2. **If not authenticated**: If the `gh` tool is installed but not authenticated, ask the user to authenticate by running `gh auth login` in their terminal, then try again.
 3. **If `gh` is not available**: If the `gh` CLI tool is not installed or available on the system, push the branch to the remote (`git push -u origin <branch>`) and ask the user to create the pull request on GitHub manually.
+
+After the pull request is created (either by you using `gh` or manually by the user if `gh` is not available), you must automatically move the project board item to the "In Review" column by running the backlog CLI script:
+```bash
+node scripts/process-backlog.js in-review <issue-number>
+```
 
 
 ## Bulletproofing & Rationalization Defense
@@ -67,7 +72,7 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 |--------|---------|
 | "The branch `<issueIdPattern>-14` already exists and the code seems fully implemented, so I can bypass the plan check." | Bypassing the check is a violation of the letter of the rules. You must check for the existence of `plan.md` and ask the user BEFORE checking out the branch or verifying the code. |
 | "I am under extreme time pressure / production is down, so I will execute plans inline or skip subagent dispatches." | Speed and urgency do not justify bypassing process. You MUST use Subagent-Driven Development to execute plans task-by-task. |
-| "Merging locally to main is faster to deploy the hotfix." | Local merges directly to the base branch bypass validation. You MUST push and create a Pull Request, utilizing the `gh` tool or asking the user to create one. |
+| "Merging locally to main is faster to deploy the hotfix, and I don't need to move it to In Review." | Local merges directly to the base branch bypass validation. You MUST push, create a Pull Request, and transition the issue to "In Review" using the backlog CLI. |
 | "I'll do the git checkout and verify the tests first, and if they fail, I'll ask about the plan." | Any codebase read, git operation, or test execution before the plan check is strictly forbidden. The check must run first. |
 | "I am under tight time pressure, so I will skip checking for LEARNING.md or bypass its constraints." | Reading and respecting `LEARNING.md` is a critical, mandatory step. Skipping it leads to repeating past mistakes. You MUST check for it and adhere to it. |
 
@@ -75,6 +80,7 @@ To resist shortcuts and rationalizations under pressure, refer to the following 
 
 - Using inline execution (`executing-plans`) instead of Subagent-Driven Development.
 - Merging branches locally to `main`/`master` instead of pushing and creating a Pull Request.
+- Not moving the issue to "In Review" using `process-backlog.js` after creating the Pull Request.
 - Checking out git branches or running tests before checking if `plan.md` exists.
 - Proceeding with implementation when `plan.md` is missing without prompting the user.
 - Proceeding because "the work is already done on another branch".
