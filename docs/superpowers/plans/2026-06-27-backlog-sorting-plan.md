@@ -24,7 +24,7 @@
 - Consumes: `backlogItems` array of issues
 - Produces: Sorted `backlogItems` array in place
 
-- [ ] **Step 1: Write a temporary scratch test script**
+- [x] **Step 1: Write a temporary scratch test script**
 
 Create `C:\Users\fabio\.gemini\antigravity-cli\brain\a4a4610e-87db-41b6-9021-fd3f796978eb/scratch/test-sort.js` with the following content:
 
@@ -48,7 +48,7 @@ console.log('Actual Order:', actual);
 console.assert(JSON.stringify(actual) === JSON.stringify(expected), `Fails because actual is not sorted by ID when priority is equal`);
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run:
 ```bash
@@ -56,7 +56,7 @@ node C:\Users\fabio\.gemini\antigravity-cli\brain\a4a4610e-87db-41b6-9021-fd3f79
 ```
 Expected: The assertion should fail or output a non-matching order (e.g., `[ 2, 3, 1, 4 ]` or similar where 1 is not before 3).
 
-- [ ] **Step 3: Update sorting logic**
+- [x] **Step 3: Update sorting logic**
 
 Modify `scripts/process-backlog.js` around lines 256-260:
 
@@ -84,7 +84,7 @@ backlogItems.sort((a, b) => {
 });
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run:
 ```bash
@@ -92,7 +92,7 @@ node C:\Users\fabio\.gemini\antigravity-cli\brain\a4a4610e-87db-41b6-9021-fd3f79
 ```
 Expected: PASS (no assertion error, actual order printed as `[ 2, 1, 3, 4 ]`).
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 Run:
 ```bash
